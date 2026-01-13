@@ -1,42 +1,78 @@
 #root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+  min-height: 100svh;
+  min-width: 100svw;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  background: var(--bg-primary);
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+.header-container {
+  display: flex;
+  height: 5rem;
+  justify-content: center;
+  align-items: center;
+  background: var(--bg-header);
+  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.06);
 }
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.header {
+  width: 90%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
+.header h1 {
+  color: var(--text-primary);
+  font-family: "Nunito Sans";
+  font-size: 0.875rem;
+  font-style: normal;
+  font-weight: 800;
+  line-height: 1.25rem;
 }
 
-.card {
-  padding: 2em;
+.header-theme-container {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-100, 0.5rem);
+  position: relative;
 }
 
-.read-the-docs {
-  color: #888;
+.header-theme-container input[type="checkbox"] {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+}
+
+.header-theme-container label {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-100, 0.5rem);
+}
+
+.header-theme-container label svg {
+  display: block;
+  width: 1rem;
+  height: 1rem;
+}
+
+.header-theme-container label svg:hover {
+  cursor: pointer;
+}
+
+.header-theme-container label span {
+  display: block;
+  color: var(--text-primary);
+  font-feature-settings: 'liga' off, 'clig' off;
+
+  font-family: "Nunito Sans";
+  font-size: 0.75rem;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 135%;
 }
