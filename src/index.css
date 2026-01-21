@@ -38,3 +38,10 @@ body {
   min-height: 100vh;
   overflow-x: hidden;
 }
+
+button {
+  all: unset;
+  border: 0;
+  box-sizing: border-box;
+  cursor: pointer;
+}

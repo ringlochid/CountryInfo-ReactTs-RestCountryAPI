@@ -41,7 +41,8 @@ const HOMEPAGE_FIELDS = 'name,flags,population,region,capital,cca3';
 export const getAllCountries = async (): Promise<Country[]> => {
   const res = await fetch(`${API_BASE}/all?fields=${HOMEPAGE_FIELDS}`);
   if (!res.ok) throw new Error('Failed to fetch countries');
-  return res.json();
+  const data = await res.json();
+  return data;
 };
 
 /**
@@ -51,7 +52,9 @@ export const searchCountries = async (name: string): Promise<Country[]> => {
   const res = await fetch(`${API_BASE}/name/${encodeURIComponent(name)}`);
   if (res.status === 404) throw new Error('No results found');
   if (!res.ok) throw new Error('Failed to search countries');
-  return res.json();
+  const data = await res.json();
+  return data;
+
 };
 
 /**
@@ -61,7 +64,8 @@ export const searchCountries = async (name: string): Promise<Country[]> => {
 export const getCountriesByRegion = async (region: string): Promise<Country[]> => {
   const res = await fetch(`${API_BASE}/region/${region}`);
   if (!res.ok) throw new Error('Failed to fetch countries by region');
-  return res.json();
+  const data = await res.json();
+  return data;
 };
 
 /**
@@ -81,7 +85,8 @@ export const getCountriesByCodes = async (codes: string[]): Promise<Country[]> =
   if (codes.length === 0) return [];
   const res = await fetch(`${API_BASE}/alpha?codes=${codes.join(',')}`);
   if (!res.ok) throw new Error('Failed to fetch countries by codes');
-  return res.json();
+  const data = await res.json();
+  return data;
 };
 
 // Available regions for filter dropdown

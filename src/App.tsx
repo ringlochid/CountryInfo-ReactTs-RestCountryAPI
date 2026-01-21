@@ -1,4 +1,6 @@
-import { createContext, useContext, useState, useEffect } from 'react'
+import React, { createContext, useContext, useState, useEffect } from 'react'
+import type {Country} from './api/restcountries'
+import { getAllCountries, getCountriesByRegion, searchCountries, getCountryByCode } from './api/restcountries'
 import './App.css'
 
 interface ThemeContextType {
@@ -6,7 +8,13 @@ interface ThemeContextType {
   toggleTheme: () => void;
 }
 
+interface countryContextType {
+  country: Country[];
+  handleCountryChange: (countries: Country[]) => void;
+}
+
 const themeContext = createContext<ThemeContextType | null>(null);
+const countryContext = createContext<countryContextType | null>(null);
 
 function ThemeProvider({ children }: { children: React.ReactNode }) {
   const [theme, setTheme] = useState('light');
@@ -26,10 +34,34 @@ function ThemeProvider({ children }: { children: React.ReactNode }) {
   )
 }
 
+
 function useTheme() {
   const context = useContext(themeContext);
   if (!context) {
     throw new Error('useTheme must be used within a ThemeProvider')
+  }
+  return context;
+}
+
+function CountryProvider({ children } : {children: React.ReactNode}) {
+  const [country, setCountry] = useState<Country[]>([]);
+
+  function handleCountryChange(countries : Country[]){
+    setCountry(countries);
+  }
+
+  return (
+    <countryContext.Provider value={{country, handleCountryChange}}>
+      {children}
+    </countryContext.Provider>
+  );
+
+}
+
+function useCountry() {
+  const context = useContext(countryContext);
+  if (!context) {
+    throw new Error('useCountry must be used within a provider.')
   }
   return context;
 }
@@ -51,7 +83,6 @@ function ThemeSwitcherIcon() {
     </svg>
   )
 }
-
 
 function ThemeSwitcher() {
   const { theme, toggleTheme } = useTheme();
@@ -80,7 +111,7 @@ function HeaderContainer() {
       <div className='header'>
         <h1>Where in the world?</h1>
         <div className='header-theme-container'>
-        <ThemeSwitcher />
+          <ThemeSwitcher />
         </div>
       </div>
     </header>
@@ -88,10 +119,53 @@ function HeaderContainer() {
 }
 
 
+function Card({ country } : {country: Country}){
+
+  return (
+    <button className='country-card'>
+      <div className='country-card-image-container'>
+        <img src={country['flags']['png']} alt={country['flags']['png']} />
+      </div>
+      <div className='country-card-details'>
+        <div className='country-stats'>
+          <h2>{country['name']['official']}</h2>
+          <p><strong>Population:</strong> {country['population']}</p>
+          <p><strong>Region:</strong> {country['region']}</p>
+          <p><strong>Capital:</strong>{country['capital']}</p>
+        </div>
+      </div>
+    </button> 
+  )
+}
+
+function CardContainer(){
+
+  const { country, handleCountryChange } = useCountry();
+
+  useEffect(() => {
+    getAllCountries()
+    .then((countries) => {handleCountryChange(countries)})
+    .catch((e) => {console.error(e)}) 
+  }, [])
+
+  return (
+    <div className='country-cards-container'>
+      {country.map((country) => {
+        return <Card country={country}/>
+      })}
+    </div>
+  )
+}
+
 function App() {
   return (
     <ThemeProvider>
-      <HeaderContainer />
+      <CountryProvider>
+        <HeaderContainer />
+        <main>
+          <CardContainer />
+        </main>
+      </CountryProvider>
     </ThemeProvider>
   )
 }

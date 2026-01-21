@@ -80,19 +80,29 @@
 main {
   width: 100%;
   height: 100%;
+  max-height: 100svh;
   display: flex;
+  flex-direction: column;
   place-items: center;
-  padding: 0 var(--spacing-700, 3.5rem) var(--spacing-800, 4rem);
+  padding: 3rem var(--spacing-700, 3.5rem) var(--spacing-800, 4rem);
+  gap: 3rem;
+  overflow-x: hidden;
+  overflow-y: scroll;
+  scroll-behavior: smooth;
+}
+
+main::after {
+  content: '';
+  display: block;
 }
 
 .country-cards-container {
+  width: 100%;
   display: grid;
-  grid-template-columns: repeat(auto-fill, 16.5rem);
-  justify-items: start;
-  align-items: center;
   align-self: stretch;
+  grid-template-columns: repeat(auto-fill, 16.5rem);
+  justify-content: center;
   gap: var(--spacing-500, 2.5rem);
-
 }
 
 .country-card {
@@ -104,29 +114,68 @@ main {
   gap: var(--spacing-0, 0);
   overflow: hidden;
   border-radius: 0.3125rem;
-  background: var(--colors-white, #FFF);
+  background: var(--bg-secondary);
   box-shadow: 0 0 7px 2px rgba(0, 0, 0, 0.10);
 }
 
-.country-card img {
+.country-card-image-container {
   width: 16.5rem;
   height: 10rem;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+}
+
+.country-card-image-container img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: middle;
 }
 
 .country-card-details {
   display: flex;
   width: 16.5rem;
-  height: 21rem;
+  height: 11rem;
   flex-direction: column;
   align-items: flex-start;
   gap: var(--spacing-0, 0);
 }
 
 .country-stats {
+  margin-top: 1.37rem;
+  margin-left: 1.5rem;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: flex-start;
   gap: 0.5rem;
   align-self: stretch;
+  overflow: hidden;
+}
+
+.country-stats h2 {
+  color: var(--text-primary);
+  font-feature-settings: 'liga' off, 'clig' off;
+
+  /* Text Preset 3 - Nunito Sans ExtaBold - 18px - 145% Line Height - 0px Line Spacing */
+  font-family: "Nunito Sans";
+  font-size: 1.125rem;
+  font-style: normal;
+  font-weight: 800;
+  line-height: 145%;
+  /* 1.63125rem */
+}
+
+.country-stats p {
+  color: var(--text-primary);
+  font-family: "Nunito Sans";
+  font-size: 0.875rem;
+  font-style: normal;
+  font-weight: 300;
+  line-height: 1rem;
+}
+
+.country-stats strong {
+  font-weight: 600;
 }
