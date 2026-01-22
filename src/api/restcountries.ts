@@ -48,8 +48,15 @@ export const getAllCountries = async (): Promise<Country[]> => {
 /**
  * Search countries by name (partial matches supported)
  */
-export const searchCountries = async (name: string): Promise<Country[]> => {
-  const res = await fetch(`${API_BASE}/name/${encodeURIComponent(name)}`);
+export const searchCountries = async (name: string, isDetail: boolean = false): Promise<Country[]> => {
+  if (!name){
+    return getAllCountries();
+  }
+  const params = new URLSearchParams({
+    fields: HOMEPAGE_FIELDS
+  });
+  const url = isDetail ? `${API_BASE}/name/${name}` : `${API_BASE}/name/${name}?${params}`;
+  const res = await fetch(url);
   if (res.status === 404) throw new Error('No results found');
   if (!res.ok) throw new Error('Failed to search countries');
   const data = await res.json();
@@ -61,8 +68,14 @@ export const searchCountries = async (name: string): Promise<Country[]> => {
  * Filter countries by region
  * Regions: africa, americas, asia, europe, oceania
  */
-export const getCountriesByRegion = async (region: string): Promise<Country[]> => {
-  const res = await fetch(`${API_BASE}/region/${region}`);
+export const getCountriesByRegion = async (region: string | null): Promise<Country[]> => {
+  if (!region) {
+    return getAllCountries();
+  }
+  const params = new URLSearchParams({
+    fields: HOMEPAGE_FIELDS 
+  });
+  const res = await fetch(`${API_BASE}/region/${region}?${params}`);
   if (!res.ok) throw new Error('Failed to fetch countries by region');
   const data = await res.json();
   return data;

@@ -8,12 +8,15 @@
   --colors-blue-950: #202C36;
   --colors-blue-900: #2B3844;
   --colors-grey-400: #808080;
+  --colors-grey-250: #C4C4C4;
+  --colors-grey-300: #B2B2B2;
 
   --bg-header: var(--colors-white);
   --bg-primary: var(--colors-grey-50);
   --bg-secondary: var(--colors-white);
   --text-primary: var(--colors-blue-950);
-  --text-secondary: var(--colors-grey-400);
+  --text-secondary: var(--colors-grey-250);
+  --icon-color: var(--colors-grey-300);
 }
 
 [data-theme="dark"] {
@@ -22,6 +25,7 @@
   --bg-secondary: var(--colors-blue-900);
   --text-primary: var(--colors-white);
   --text-secondary: var(--colors-white);
+  --icon-color: var(--colors-white);
 }
 
 * {

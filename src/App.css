@@ -86,23 +86,20 @@ main {
   place-items: center;
   padding: 3rem var(--spacing-700, 3.5rem) var(--spacing-800, 4rem);
   gap: 3rem;
-  overflow-x: hidden;
-  overflow-y: scroll;
-  scroll-behavior: smooth;
-}
-
-main::after {
-  content: '';
-  display: block;
 }
 
 .country-cards-container {
   width: 100%;
+  max-width: 80rem;
   display: grid;
-  align-self: stretch;
+  align-self: center;
   grid-template-columns: repeat(auto-fill, 16.5rem);
   justify-content: center;
   gap: var(--spacing-500, 2.5rem);
+  overflow-x: hidden;
+  overflow-y: scroll;
+  scroll-behavior: smooth;
+  scrollbar-width: none;
 }
 
 .country-card {
@@ -178,4 +175,165 @@ main::after {
 
 .country-stats strong {
   font-weight: 600;
+}
+
+.search-bar-container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 80rem;
+  align-items: flex-start;
+  gap: var(--spacing-500, 2.5rem);
+
+  @media (width > 440px) {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  @media (width >=768px) {
+    padding: var(--spacing-0, 0) var(--spacing-400, 2rem);
+  }
+}
+
+.search-container {
+  display: flex;
+  width: 100%;
+  height: 3rem;
+  padding: var(--spacing-0, 0) var(--spacing-400, 2rem);
+  justify-content: flex-start;
+  align-items: center;
+  gap: var(--spacing-0, 0);
+  border-radius: 0.3125rem;
+  background: var(--bg-secondary);
+  box-shadow: 0 2px 9px 0 rgba(0, 0, 0, 0.05);
+
+  @media (width > 440px) {
+    width: 30rem;
+    height: 3.5rem;
+  }
+}
+
+.search-bar {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  gap: var(--spacing-300, 1.5rem);
+}
+
+.search-bar svg {
+  width: 0.97225rem;
+  height: 0.97225rem;
+  color: var(--icon-color);
+}
+
+.search-bar input {
+  flex: 1;
+  border: none;
+  outline: none;
+  margin: 0;
+  padding: 0;
+  background-color: var(--bg-secondary);
+
+  color: var(--text-secondary);
+  font-feature-settings: 'liga' off, 'clig' off;
+  /* Text Preset 5 (Regular) - Nunito Sans Regular - 14px - 145% Line Height - 0px Line Spacing */
+  font-family: "Nunito Sans";
+  font-size: 0.875rem;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 145%;
+  /* 1.26875rem */
+}
+
+.filter-container {
+  display: flex;
+  width: 12.5rem;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--spacing-100, 0.5rem);
+  position: relative;
+
+  color: var(--colors-grey-950, #111517);
+  font-feature-settings: 'liga' off, 'clig' off;
+
+  /* Text Preset 6 (Regular) - Nunito Sans Regular - 12px - 135% Line Height - 0px Line Spacing */
+  font-family: "Nunito Sans";
+  font-size: 0.75rem;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 135%;
+  /* 1.0125rem */
+}
+
+.region-list {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  padding: var(--spacing-200, 1rem) var(--spacing-300, 1.5rem);
+  align-items: flex-start;
+  gap: var(--spacing-100, 0.5rem);
+  position: absolute;
+  top: calc(100% + 0.25rem);
+  left: 0;
+  z-index: 10;
+  border-radius: 0.3125rem;
+  background: var(--bg-secondary);
+  box-shadow: 0 2px 9px 0 rgba(0, 0, 0, 0.05);
+  list-style: none;
+  margin: 0;
+}
+
+.region-item {
+  width: 100%;
+  padding: 0.25rem 0;
+  cursor: pointer;
+  color: var(--text-primary);
+  transition: opacity 0.2s;
+}
+
+.region-item:hover {
+  opacity: 0.7;
+}
+
+.filter-dropdown {
+  display: flex;
+  width: 12.5rem;
+  height: 3rem;
+  padding: var(--spacing-0, 0) var(--spacing-300, 1.5rem);
+  justify-content: center;
+  align-items: center;
+  border-radius: 0.3125rem;
+  background: var(--bg-secondary);
+  box-shadow: 0 2px 9px 0 rgba(0, 0, 0, 0.05);
+  cursor: pointer;
+
+  @media (width > 440px) {
+    height: 3.5rem;
+  }
+}
+
+.filter-header {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  align-items: center;
+  color: var(--text-primary);
+}
+
+.filter-header span {
+  margin: 0;
+  padding: 0;
+}
+
+.filter-header svg {
+  width: 0.625rem;
+  height: 0.375rem;
+  flex-shrink: 0;
+  transition: transform 0.175s ease-in-out;
+  color: var(--text-primary);
+}
+
+.filter-header svg.expanded {
+  transform: rotate(180deg);
 }

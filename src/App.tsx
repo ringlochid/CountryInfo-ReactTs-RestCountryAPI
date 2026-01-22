@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from 'react'
+import React, { createContext, useContext, useState, useEffect, useCallback } from 'react'
 import type {Country} from './api/restcountries'
 import { getAllCountries, getCountriesByRegion, searchCountries, getCountryByCode } from './api/restcountries'
 import './App.css'
@@ -44,11 +44,12 @@ function useTheme() {
 }
 
 function CountryProvider({ children } : {children: React.ReactNode}) {
+  console.log('rendering country context');
   const [country, setCountry] = useState<Country[]>([]);
 
-  function handleCountryChange(countries : Country[]){
-    setCountry(countries);
-  }
+  const handleCountryChange = useCallback((countries : Country[]) => {
+      setCountry(countries);
+    }, []); 
 
   return (
     <countryContext.Provider value={{country, handleCountryChange}}>
@@ -151,8 +152,107 @@ function CardContainer(){
   return (
     <div className='country-cards-container'>
       {country.map((country) => {
-        return <Card country={country}/>
+        return <Card key={country.cca3} country={country}/>
       })}
+    </div>
+  )
+}
+
+function FilterContainer() {
+  const [isOpen, setIsOpen] = useState(false);
+  const [selectedRegion, setSelectedRegion] = useState<string | null>(null);
+
+  const regions = ['Africa', 'America', 'Asia', 'Europe', 'Oceania'];
+
+  const { handleCountryChange } = useCountry();
+
+  useEffect(() => {
+    console.log('selected region: ', selectedRegion);
+    getCountriesByRegion(selectedRegion)
+    .then((countries) => {handleCountryChange(countries)})
+    .catch((e) => {console.error(e)}) 
+  }, [selectedRegion, handleCountryChange])
+
+  return (
+    <div className='filter-container'>
+      <div 
+        className='filter-dropdown'
+        onClick={() => setIsOpen(!isOpen)}
+      >
+        <div className='filter-header'>
+          <span>{selectedRegion ?? 'Filter by Region'}</span>
+          <svg 
+            xmlns="http://www.w3.org/2000/svg" 
+            width="10" 
+            height="6" 
+            viewBox="0 0 10 6" 
+            fill="none"
+            className={isOpen ? 'expanded' : ''}
+          >
+            <path 
+              fillRule="evenodd" 
+              clipRule="evenodd" 
+              d="M0.646447 0.646447C0.841709 0.451184 1.15829 0.451184 1.35355 0.646447L5 4.29289L8.64645 0.646447C8.84171 0.451184 9.15829 0.451184 9.35355 0.646447C9.54882 0.841709 9.54882 1.15829 9.35355 1.35355L5.35355 5.35355C5.15829 5.54882 4.84171 5.54882 4.64645 5.35355L0.646447 1.35355C0.451184 1.15829 0.451184 0.841709 0.646447 0.646447Z" 
+              fill="currentColor"
+            />
+          </svg>
+        </div>
+      </div>
+      {isOpen && (
+        <ul className='region-list'>
+          {regions.map((region) => (
+            <li 
+              key={region}
+              className='region-item'
+              onClick={() => {
+                setSelectedRegion(region);
+                setIsOpen(false);
+              }}
+            >
+              {region}
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  )
+}
+
+function SearchBar() {
+  const [searchQuery, setSearchQuery] = useState('');
+  const {handleCountryChange} = useCountry();
+
+  useEffect(() => {
+    const id = setTimeout(() => {
+      searchCountries(searchQuery)
+      .then((countries) => {handleCountryChange(countries)})
+      .catch((e) => {console.error(e)}) 
+    }, 300);
+    return () => clearTimeout(id);
+  }, [searchQuery, handleCountryChange])
+
+  return (
+    <div className='search-container'>
+      <div className='search-bar'>
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none">
+          <path fillRule="evenodd" clipRule="evenodd" d="M11.1111 9.77778H10.4L10.1333 9.51111C11.0222 8.53333 11.5556 7.2 11.5556 5.77778C11.5556 2.57778 8.97778 0 5.77778 0C2.57778 0 0 2.57778 0 5.77778C0 8.97778 2.57778 11.5556 5.77778 11.5556C7.2 11.5556 8.53333 11.0222 9.51111 10.1333L9.77778 10.4V11.1111L14.2222 15.5556L15.5556 14.2222L11.1111 9.77778ZM5.77778 9.77778C3.55556 9.77778 1.77778 8 1.77778 5.77778C1.77778 3.55556 3.55556 1.77778 5.77778 1.77778C8 1.77778 9.77778 3.55556 9.77778 5.77778C9.77778 8 8 9.77778 5.77778 9.77778Z" fill="currentColor"/>
+        </svg>
+        <input 
+          type="text" 
+          placeholder="Search for a country..." 
+          value={searchQuery} 
+          onChange={(e) => setSearchQuery(e.target.value)} 
+        />
+      </div>
+    </div>
+  )
+}
+
+function SearchContainer() {
+  return (
+    <div className='search-bar-container'>
+      <SearchBar />
+      <FilterContainer />
     </div>
   )
 }
@@ -163,6 +263,7 @@ function App() {
       <CountryProvider>
         <HeaderContainer />
         <main>
+          <SearchContainer />
           <CardContainer />
         </main>
       </CountryProvider>
