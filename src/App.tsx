@@ -15,7 +15,9 @@ const router = createBrowserRouter([
     path: "/country/:id",
     element: <DetailPage />,
   },
-]);
+], {
+  basename: import.meta.env.BASE_URL,
+});
 
 function App() {
   return (

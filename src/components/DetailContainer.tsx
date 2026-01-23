@@ -158,7 +158,7 @@ export function DetailContainer() {
     <main>
         <div className='detail-page-container'>
             <BackButton navigate={navigate}/>
-            <CountryInfo detailedCountry={detailedCountry}/>
+            {detailedCountry && <CountryInfo detailedCountry={detailedCountry}/>}
        </div>
     </main>
   )
