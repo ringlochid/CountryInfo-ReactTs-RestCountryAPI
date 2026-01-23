@@ -41,7 +41,7 @@ body {
   padding: 0;
   display: flex;
   place-items: center;
-  min-height: 100vh;
+  height: 120svh;
   overflow-x: hidden;
 }
 

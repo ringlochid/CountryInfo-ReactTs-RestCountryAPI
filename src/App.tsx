@@ -11,8 +11,12 @@ interface ThemeContextType {
 interface countryContextType {
   country: Country[];
   region: string | null;
+  isLoading: boolean;
+  isLoadError: boolean;
   handleCountryChange: (countries: Country[]) => void;
   handleRegionChange: (region: string | null) => void;
+  setIsLoading: (isLoading: boolean) => void;
+  setIsLoadError: (isLoadError: boolean) => void;
 }
 
 const themeContext = createContext<ThemeContextType | null>(null);
@@ -49,6 +53,8 @@ function CountryProvider({ children } : {children: React.ReactNode}) {
   console.log('rendering country context');
   const [country, setCountry] = useState<Country[]>([]);
   const [region, setRegion] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isLoadError, setIsLoadError] = useState(false);
 
   const handleRegionChange = useCallback((region : string | null) => {
     setRegion(region);
@@ -59,7 +65,7 @@ function CountryProvider({ children } : {children: React.ReactNode}) {
     }, [region]); 
 
   return (
-    <countryContext.Provider value={{country, region, handleCountryChange, handleRegionChange}}>
+    <countryContext.Provider value={{country, region, isLoading, isLoadError, handleCountryChange, handleRegionChange, setIsLoading, setIsLoadError}}>
       {children}
     </countryContext.Provider>
   );
@@ -149,13 +155,31 @@ function Card({ country } : {country: Country}){
 function CardContainer(){
   console.log('rendering card container')
 
-  const { country, handleCountryChange } = useCountry();
+  const { country, isLoading, isLoadError, handleCountryChange, setIsLoading, setIsLoadError } = useCountry();
 
   useEffect(() => {
+    setIsLoading(true);
     getAllCountries()
     .then((countries) => {handleCountryChange(countries)})
-    .catch((e) => {console.error(e)}) 
-  }, [handleCountryChange])
+    .catch((e) => {console.error(e); setIsLoadError(true)}) 
+    .finally(() => setIsLoading(false))
+  }, [handleCountryChange, setIsLoading])
+
+  if(isLoadError) {
+    return (
+      <div className='error-container'>
+        <h2>Something went wrong</h2>
+      </div>
+    )
+  }
+
+  if (isLoading) {
+    return (
+      <div className='loading-container'>
+        <h2>Loading...</h2>
+      </div>
+    )
+  }
 
   return (
     <div className='country-cards-container'>
@@ -168,7 +192,6 @@ function CardContainer(){
 
 function FilterContainer() {
   const [isOpen, setIsOpen] = useState(false);
-
   const regions = ['Africa', 'Americas', 'Asia', 'Europe', 'Oceania', 'Unselect'];
 
   const {region, handleRegionChange } = useCountry();
@@ -227,16 +250,18 @@ function FilterContainer() {
 function SearchBar() {
   const [searchQuery, setSearchQuery] = useState('');
   const [isError, setIsError] = useState(false);
-  const {handleCountryChange} = useCountry();
+  const {handleCountryChange, setIsLoading} = useCountry();
 
   useEffect(() => {
     const id = setTimeout(() => {
+      setIsLoading(true);
       searchCountries(searchQuery)
       .then((countries) => {handleCountryChange(countries)})
       .catch((e) => {console.error(e); setIsError(true)}) 
+      .finally(() => setIsLoading(false))
     }, 300);
     return () => clearTimeout(id);
-  }, [searchQuery, handleCountryChange])
+  }, [searchQuery, handleCountryChange, setIsLoading])
 
   return (
     <div className='search-wrapper'>
