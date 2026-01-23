@@ -10,6 +10,7 @@
   --colors-grey-400: #808080;
   --colors-grey-250: #C4C4C4;
   --colors-grey-300: #B2B2B2;
+  --colors-red: #D73328;
 
   --bg-header: var(--colors-white);
   --bg-primary: var(--colors-grey-50);
@@ -17,6 +18,7 @@
   --text-primary: var(--colors-blue-950);
   --text-secondary: var(--colors-grey-250);
   --icon-color: var(--colors-grey-300);
+  --error-color: var(--colors-red);
 }
 
 [data-theme="dark"] {
