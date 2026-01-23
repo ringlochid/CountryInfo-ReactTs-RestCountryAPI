@@ -1,73 +1,128 @@
-# React + TypeScript + Vite
+# 🌍 Country Info - REST Countries API
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A modern, responsive web application for exploring information about countries around the world. Built with React, TypeScript, and the REST Countries API.
 
-Currently, two official plugins are available:
+![Preview](./preview.jpg)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## ✨ Features
 
-## React Compiler
+- **Browse All Countries** - View a grid of country cards with flags, population, region, and capital
+- **Search** - Search countries by name, capital, or country code (parallel search)
+- **Filter by Region** - Filter countries by continent (Africa, Americas, Asia, Europe, Oceania)
+- **Detailed View** - Click any country to see full details including:
+  - Native name, population, region, sub-region
+  - Top level domain, currencies, languages
+  - Border countries (clickable links)
+- **Dark/Light Theme** - Toggle between themes with persistent preference
+- **Responsive Design** - Optimized for mobile, tablet, and desktop
+- **Fluid Typography** - Font sizes scale smoothly with viewport using CSS `clamp()`
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## 🚀 Live Demo
 
-## Expanding the ESLint configuration
+**[View Live Site](https://ringlochid.github.io/CountryInfo-ReactTs-RestCountryAPI/)**
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## 🛠️ Tech Stack
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+| Technology | Purpose |
+|------------|---------|
+| **React 19** | UI library |
+| **TypeScript** | Type safety |
+| **Vite** | Build tool & dev server |
+| **React Router v7** | Client-side routing |
+| **CSS Variables** | Theming & responsive typography |
+| **REST Countries API** | Country data |
+| **GitHub Actions** | CI/CD deployment |
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+## 📁 Project Structure
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```
+src/
+├── api/
+│   └── restcountries.ts    # API functions & type definitions
+├── components/
+│   ├── CardContainer.tsx   # Country cards grid
+│   ├── CountryProvider.tsx # Country context provider
+│   ├── DetailContainer.tsx # Country detail view
+│   ├── HeaderContainer.tsx # Header with theme toggle
+│   ├── SearchContainer.tsx # Search & filter bar
+│   └── ThemeProvider.tsx   # Theme context provider
+├── context/
+│   ├── countryContext.ts   # Country state context
+│   ├── themeContext.ts     # Theme state context
+│   ├── useCountry.ts       # Country hook
+│   └── useTheme.ts         # Theme hook
+├── pages/
+│   ├── HomePage.tsx        # Main countries list
+│   └── DetailPage.tsx      # Country detail page
+├── App.tsx                 # Router configuration
+├── App.css                 # Component styles
+└── index.css               # Global styles & CSS variables
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## 🏃 Getting Started
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+### Prerequisites
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+- Node.js 18+ 
+- npm or yarn
+
+### Installation
+
+```bash
+# Clone the repository
+git clone https://github.com/ringlochid/CountryInfo-ReactTs-RestCountryAPI.git
+
+# Navigate to project directory
+cd CountryInfo-ReactTs-RestCountryAPI
+
+# Install dependencies
+npm install
+
+# Start development server
+npm run dev
 ```
+
+The app will be available at `http://localhost:5173`
+
+### Build for Production
+
+```bash
+npm run build
+```
+
+The production build will be in the `dist/` folder.
+
+## 🌐 API Reference
+
+This app uses the [REST Countries API v3.1](https://restcountries.com/).
+
+| Endpoint | Description |
+|----------|-------------|
+| `GET /all` | Get all countries |
+| `GET /name/{name}` | Search by country name |
+| `GET /capital/{capital}` | Search by capital city |
+| `GET /alpha/{code}` | Get country by code |
+| `GET /region/{region}` | Filter by region |
+
+## 🎨 Features Explained
+
+### Parallel Search
+The search feature uses `Promise.any()` to simultaneously search by name, capital, and country code—returning the first successful result for a faster user experience.
+
+### Responsive Typography
+Uses CSS `clamp()` for fluid font scaling:
+```css
+--font-size-xl: clamp(1.5rem, 1.25rem + 1.25vw, 2rem);
+```
+
+### Theme Persistence
+The theme preference is stored and toggled via React Context, supporting both light and dark modes.
+
+## 📜 License
+
+This project is open source and available under the [MIT License](LICENSE).
+
+## 🙏 Acknowledgments
+
+- Design inspiration from [Frontend Mentor](https://www.frontendmentor.io/)
+- Country data from [REST Countries API](https://restcountries.com/)
