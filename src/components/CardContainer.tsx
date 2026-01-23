@@ -6,7 +6,7 @@ import { Link } from "react-router-dom";
 function Card({ country } : {country: Country}){
 
   return (
-    <button className='country-card'>
+    <Link to={`/country/${country.cca3}`} className='country-card'>
       <div className='country-card-image-container'>
         <img src={country['flags']['png']} alt={country['flags']['alt']} />
       </div>
@@ -18,7 +18,7 @@ function Card({ country } : {country: Country}){
           <p><strong>Capital:</strong>{country['capital']}</p>
         </div>
       </div>
-    </button> 
+    </Link> 
   )
 }
 
@@ -28,11 +28,9 @@ export function CardContainer(){
   const { country, isLoading, isLoadError, handleCountryChange, setIsLoading, setIsLoadError } = useCountry();
 
   useEffect(() => {
-    setIsLoading(true);
     getAllCountries()
-    .then((countries) => {handleCountryChange(countries)})
-    .catch((e) => {console.error(e); setIsLoadError(true)}) 
-    .finally(() => setIsLoading(false))
+    .then((countries) => {handleCountryChange(countries); setIsLoading(false)})
+    .catch((e) => {console.error(e); setIsLoading(true);setIsLoadError(true)}) 
   }, [handleCountryChange, setIsLoading, setIsLoadError])
 
   if(isLoadError) {

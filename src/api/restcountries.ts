@@ -161,7 +161,3 @@ export const getCountriesByCodes = async (codes: string[]): Promise<Country[]> =
   const data = await res.json();
   return data;
 };
-
-// Available regions for filter dropdown
-export const REGIONS = ['Africa', 'Americas', 'Asia', 'Europe', 'Oceania'] as const;
-export type Region = (typeof REGIONS)[number];

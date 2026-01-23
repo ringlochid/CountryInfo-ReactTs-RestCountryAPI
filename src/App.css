@@ -28,10 +28,10 @@
 .header h1 {
   color: var(--text-primary);
   font-family: "Nunito Sans";
-  font-size: 0.875rem;
+  font-size: var(--font-size-base);
   font-style: normal;
   font-weight: 800;
-  line-height: 1.25rem;
+  line-height: var(--line-height-tight);
 }
 
 .header-theme-container {
@@ -71,20 +71,20 @@
   font-feature-settings: 'liga' off, 'clig' off;
 
   font-family: "Nunito Sans";
-  font-size: 0.75rem;
+  font-size: var(--font-size-xs);
   font-style: normal;
   font-weight: 600;
-  line-height: 135%;
+  line-height: var(--line-height-snug);
 }
 
 main {
   width: 100%;
   height: 100%;
-  max-height: 100svh;
+  max-height: 90svh;
   display: flex;
   flex-direction: column;
   place-items: center;
-  padding: 3rem var(--spacing-700, 3.5rem) var(--spacing-800, 4rem);
+  padding: 3rem 0rem var(--spacing-800, 4rem);
   gap: 3rem;
 }
 
@@ -154,6 +154,7 @@ main {
   border-radius: 0.3125rem;
   background: var(--bg-secondary);
   box-shadow: 0 0 7px 2px rgba(0, 0, 0, 0.10);
+  text-decoration: none;
 }
 
 .country-card-image-container {
@@ -198,20 +199,19 @@ main {
 
   /* Text Preset 3 - Nunito Sans ExtaBold - 18px - 145% Line Height - 0px Line Spacing */
   font-family: "Nunito Sans";
-  font-size: 1.125rem;
+  font-size: var(--font-size-md);
   font-style: normal;
   font-weight: 800;
-  line-height: 145%;
-  /* 1.63125rem */
+  line-height: var(--line-height-normal);
 }
 
 .country-stats p {
   color: var(--text-primary);
   font-family: "Nunito Sans";
-  font-size: 0.875rem;
+  font-size: var(--font-size-sm);
   font-style: normal;
   font-weight: 300;
-  line-height: 1rem;
+  line-height: var(--line-height-tight);
 }
 
 .country-stats strong {
@@ -225,6 +225,7 @@ main {
   max-width: 80rem;
   align-items: flex-start;
   gap: var(--spacing-500, 2.5rem);
+  padding: var(--spacing-0, 0) var(--spacing-200, 1rem);
 
   @media (width >=768px) {
     flex-direction: row;
@@ -233,11 +234,12 @@ main {
   }
 
   @media (width >=768px) {
-    padding: var(--spacing-0, 0) var(--spacing-400, 2rem);
+    padding: var(--spacing-0, 0) var(--spacing-600, 3rem);
   }
 }
 
 .search-wrapper {
+  width: 100%;
   display: flex;
   flex-direction: column;
   gap: var(--spacing-150, 0.75rem);
@@ -255,7 +257,7 @@ main {
   background: var(--bg-secondary);
   box-shadow: 0 2px 9px 0 rgba(0, 0, 0, 0.05);
 
-  @media (width > 440px) {
+  @media (width >=768px) {
     width: 30rem;
     height: 3.5rem;
   }
@@ -303,11 +305,10 @@ main {
   font-feature-settings: 'liga' off, 'clig' off;
   /* Text Preset 5 (Regular) - Nunito Sans Regular - 14px - 145% Line Height - 0px Line Spacing */
   font-family: "Nunito Sans";
-  font-size: 0.875rem;
+  font-size: var(--font-size-sm);
   font-style: normal;
   font-weight: 400;
-  line-height: 145%;
-  /* 1.26875rem */
+  line-height: var(--line-height-normal);
 }
 
 .filter-container {
@@ -323,11 +324,10 @@ main {
 
   /* Text Preset 6 (Regular) - Nunito Sans Regular - 12px - 135% Line Height - 0px Line Spacing */
   font-family: "Nunito Sans";
-  font-size: 0.75rem;
+  font-size: var(--font-size-xs);
   font-style: normal;
   font-weight: 400;
-  line-height: 135%;
-  /* 1.0125rem */
+  line-height: var(--line-height-snug);
 }
 
 .region-list {
@@ -400,4 +400,255 @@ main {
 
 .filter-header svg.expanded {
   transform: rotate(180deg);
+}
+
+.detail-page-container {
+  margin-top: 0.5rem;
+  height: calc(100% - 0.5rem);
+  width: 19.99rem;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--spacing-800, 4rem);
+  overflow-x: hidden;
+  overflow-y: scroll;
+  scroll-behavior: smooth;
+  scrollbar-width: none;
+
+  @media (767px<width <1440px) {
+    gap: var(--spacing-700, 3.5rem);
+    width: 35.59rem;
+  }
+
+  @media (width >=1440px) {
+    gap: var(--spacing-1000, 5rem);
+    width: 79.87rem;
+  }
+}
+
+.back-btn {
+  display: flex;
+  width: 6.5rem;
+  height: 2rem;
+  padding: var(--spacing-0, 0);
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: var(--spacing-0, 0);
+  border-radius: 0.125rem;
+  background: var(--bg-secondary);
+  box-shadow: 0 0 7px 0 rgba(0, 0, 0, 0.10);
+
+  @media (width >=768px) {
+    width: 8.5rem;
+    height: 2.5rem;
+  }
+}
+
+.back-btn-content {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--spacing-100, 0.5rem);
+}
+
+.back-btn-content svg {
+  width: 1.387rem;
+  height: 1.32581rem;
+  color: var(--text-primary);
+}
+
+.back-btn-content span {
+  display: block;
+  color: var(--text-primary);
+  font-feature-settings: 'liga' off, 'clig' off;
+
+  /* Text Preset 4 (Light) - Nunito Sans Light - 16px - 200% Line Height - 0px Line Spacing */
+  font-family: "Nunito Sans";
+  font-size: var(--font-size-base);
+  font-style: normal;
+  font-weight: 300;
+  line-height: var(--line-height-loose);
+}
+
+.country-info {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--spacing-600, 3rem);
+  align-self: stretch;
+
+  @media (width >=768px) {
+    gap: var(--spacing-700, 3.5rem);
+  }
+
+  @media (width >=1440px) {
+    flex-direction: row;
+    gap: 0;
+    justify-content: space-between;
+  }
+}
+
+.country-info img {
+  width: 100%;
+  object-fit: fill;
+  object-position: center;
+  height: fit-content;
+
+  @media (width >=768px) {
+    width: 35.59rem;
+  }
+
+  @media (width >=1440px) {
+    width: 34.98rem;
+  }
+}
+
+.country-detail-container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-400, 2rem);
+  align-self: stretch;
+  align-items: start;
+
+  @media (width >=768px) {
+    gap: var(--spacing-300, 1.5rem);
+  }
+
+  @media (width >=1440px) {
+    gap: var(--spacing-800, 4rem);
+  }
+}
+
+.country-detail-stats-container {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--spacing-200, 1rem);
+  align-self: stretch;
+  flex: 1;
+
+  @media (width >=768px) {
+    gap: var(--spacing-300, 1.5rem);
+  }
+
+  @media (width >=1440px) {
+    width: 37.38rem;
+  }
+}
+
+.country-detail-stats-container h1 {
+  color: var(--text-primary);
+  font-feature-settings: 'liga' off, 'clig' off;
+
+  /* Text Preset 2 - Nunito Sans ExtaBold - responsive 24px → 32px */
+  font-family: "Nunito Sans";
+  font-size: var(--font-size-xl);
+  font-style: normal;
+  font-weight: 800;
+  line-height: var(--line-height-tight);
+}
+
+.country-detail-stats {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-100, 1rem);
+  align-self: stretch;
+  align-items: start;
+
+  @media (width >=768px) {
+    flex-direction: row;
+    gap: 0;
+    justify-content: space-between;
+  }
+}
+
+.country-detail-stats-main-container .country-detail-stats-sub-container {
+  @media (width >=768px) {
+    max-width: 16rem;
+  }
+}
+
+.country-detail-stats-key {
+  margin-top: 1rem;
+  color: var(--text-primary);
+  font-family: "Nunito Sans";
+  font-size: var(--font-size-sm);
+  font-style: normal;
+  font-weight: 600;
+  line-height: var(--line-height-loose);
+}
+
+.country-detail-stats-value {
+  color: var(--text-primary);
+  font-family: "Nunito Sans";
+  font-size: var(--font-size-sm);
+  font-style: normal;
+  font-weight: 300;
+  line-height: var(--line-height-loose);
+}
+
+.country-detail-stats-value::before {
+  content: ' ';
+}
+
+.country-detail-stats-border-container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-200, 1rem);
+  align-self: stretch;
+  align-items: start;
+
+  @media (width >=768px) {
+    flex-direction: row;
+  }
+}
+
+.country-detail-stats-border-container h2 {
+  color: var(--text-primary);
+  font-family: "Nunito Sans";
+  font-size: var(--font-size-base);
+  font-style: normal;
+  font-weight: 600;
+  line-height: var(--line-height-relaxed);
+
+  @media (width >=768px) {
+    width: 8rem;
+  }
+}
+
+.country-detail-stats-border {
+  flex: 1;
+  align-self: stretch;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--spacing-200, 1rem);
+}
+
+.country-detail-stats-border-btn {
+  display: flex;
+  width: 100%;
+  height: 1.75rem;
+  padding: var(--spacing-0, 0);
+  justify-content: center;
+  align-items: center;
+  gap: var(--spacing-0, 0);
+  border-radius: 0.125rem;
+  background: var(--bg-secondary);
+  box-shadow: 0 0 4px 1px rgba(0, 0, 0, 0.10);
+
+  text-decoration: none;
+}
+
+.country-detail-stats-border-btn span {
+  color: var(--text-primary);
+  font-feature-settings: 'liga' off, 'clig' off;
+
+  /* Text Preset 6 (Light) - Nunito Sans Light - 12px - 135% Line Height - 0px Line Spacing */
+  font-family: "Nunito Sans";
+  font-size: var(--font-size-xs);
+  font-style: normal;
+  font-weight: 300;
+  line-height: var(--line-height-snug);
 }

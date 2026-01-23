@@ -5,7 +5,7 @@ import { countryContext } from "../context/countryContext";
 export function CountryProvider({ children } : {children: React.ReactNode}) {
   const [country, setCountry] = useState<Country[]>([]);
   const [region, setRegion] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [isLoadError, setIsLoadError] = useState(false);
 
   const handleRegionChange = useCallback((region : string | null) => {

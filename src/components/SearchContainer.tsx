@@ -2,10 +2,12 @@ import { useEffect, useState } from "react";
 import { searchCountries } from "../api/restcountries";
 import { useCountry } from "../context/useCountry";
 
+export const REGIONS = ['Africa', 'Americas', 'Asia', 'Europe', 'Oceania', 'Unselect'] as const;
+export type Region = (typeof REGIONS)[number];
+
 function FilterContainer() {
   const [isOpen, setIsOpen] = useState(false);
-  const regions = ['Africa', 'Americas', 'Asia', 'Europe', 'Oceania', 'Unselect'];
-
+  const regions = REGIONS;
   const {region, handleRegionChange } = useCountry();
 
   return (
@@ -67,11 +69,9 @@ function SearchBar() {
 
   useEffect(() => {
     const id = setTimeout(() => {
-      setIsLoading(true);
       searchCountries(searchQuery)
-      .then((countries) => {handleCountryChange(countries)})
-      .catch((e) => {console.error(e); setIsError(true)}) 
-      .finally(() => setIsLoading(false))
+      .then((countries) => {handleCountryChange(countries); setIsLoading(false)})
+      .catch((e) => {console.error(e); setIsLoading(false);setIsError(true)}) 
     }, 300);
     return () => clearTimeout(id);
   }, [searchQuery, handleCountryChange, setIsLoading])

@@ -3,6 +3,7 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 
+  /* Colors */
   --colors-white: #FFF;
   --colors-grey-50: #FCFCFC;
   --colors-blue-950: #202C36;
@@ -12,6 +13,7 @@
   --colors-grey-300: #B2B2B2;
   --colors-red: #D73328;
 
+  /* Semantic Colors */
   --bg-header: var(--colors-white);
   --bg-primary: var(--colors-grey-50);
   --bg-secondary: var(--colors-white);
@@ -19,6 +21,43 @@
   --text-secondary: var(--colors-grey-250);
   --icon-color: var(--colors-grey-300);
   --error-color: var(--colors-red);
+
+  /* ======================================
+     Responsive Typography with clamp()
+     Formula: clamp(min, preferred, max)
+     Preferred uses viewport width for fluid scaling
+     ====================================== */
+
+  /* Font Sizes - from smallest to largest */
+  /* 12px → 12px (no scaling needed for smallest text) */
+  --font-size-xs: 0.75rem;
+
+  /* 14px → 14px (body text, stays consistent) */
+  --font-size-sm: 0.875rem;
+
+  /* 14px → 16px (header h1, back button) */
+  --font-size-base: clamp(0.875rem, 0.8rem + 0.35vw, 1rem);
+
+  /* 16px → 18px (country card heading) */
+  --font-size-md: clamp(1rem, 0.9rem + 0.45vw, 1.125rem);
+
+  /* 18px → 24px (country detail h1 mobile → desktop) */
+  --font-size-lg: clamp(1.125rem, 0.95rem + 0.85vw, 1.5rem);
+
+  /* 24px → 32px (country detail h1 at desktop) */
+  --font-size-xl: clamp(1.5rem, 1.25rem + 1.25vw, 2rem);
+
+  /* Line Heights - unitless values for proper scaling */
+  --line-height-tight: 1.25;
+  /* 125% - compact elements */
+  --line-height-snug: 1.35;
+  /* 135% - labels, small text */
+  --line-height-normal: 1.45;
+  /* 145% - body text */
+  --line-height-relaxed: 1.5;
+  /* 150% - readable paragraphs */
+  --line-height-loose: 2;
+  /* 200% - back button, spaced items */
 }
 
 [data-theme="dark"] {
