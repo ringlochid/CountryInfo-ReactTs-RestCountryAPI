@@ -46,22 +46,82 @@ export const getAllCountries = async (): Promise<Country[]> => {
 };
 
 /**
- * Search countries by name (partial matches supported)
+ * Helper to create a fetch promise that rejects on non-ok responses
+ */
+const fetchOrReject = async (url: string): Promise<Country[]> => {
+  const res = await fetch(url);
+  if (!res.ok) throw new Error('Not found');
+  return res.json();
+};
+
+/**
+ * Search countries by name, capital, or code (parallel search)
+ * Uses Promise.any() to run all searches simultaneously and return the first success
  */
 export const searchCountries = async (name: string, isDetail: boolean = false): Promise<Country[]> => {
-  if (!name){
+  if (!name) {
     return getAllCountries();
   }
-  const params = new URLSearchParams({
-    fields: HOMEPAGE_FIELDS
-  });
-  const url = isDetail ? `${API_BASE}/name/${name}` : `${API_BASE}/name/${name}?${params}`;
-  const res = await fetch(url);
-  if (res.status === 404) throw new Error('No results found');
-  if (!res.ok) throw new Error('Failed to search countries');
-  const data = await res.json();
-  return data;
 
+  const fieldParams = `fields=${HOMEPAGE_FIELDS}`;
+
+  const nameUrl = isDetail 
+    ? `${API_BASE}/name/${encodeURIComponent(name)}` 
+    : `${API_BASE}/name/${encodeURIComponent(name)}?${fieldParams}`;
+  
+  const capitalUrl = isDetail 
+    ? `${API_BASE}/capital/${encodeURIComponent(name)}` 
+    : `${API_BASE}/capital/${encodeURIComponent(name)}?${fieldParams}`;
+  
+  const codeUrl = isDetail 
+    ? `${API_BASE}/alpha?codes=${encodeURIComponent(name)}` 
+    : `${API_BASE}/alpha?codes=${encodeURIComponent(name)}&${fieldParams}`;
+
+  const searchPromises: Promise<Country[]>[] = [
+    fetchOrReject(nameUrl),
+    fetchOrReject(capitalUrl),
+  ];
+
+  if (name.length <= 3) {
+    searchPromises.push(fetchOrReject(codeUrl));
+  }
+
+  try {
+    const result = await Promise.any(searchPromises);
+    return result;
+  } catch {
+    throw new Error('Country not found');
+  }
+};
+
+/**
+ * Search countries by code only (for specific code lookups)
+ */
+export const searchCountriesByCode = async (code: string, isDetail: boolean = false): Promise<Country[]> => {
+  const fieldParams = `fields=${HOMEPAGE_FIELDS}`;
+  const url = isDetail 
+    ? `${API_BASE}/alpha?codes=${encodeURIComponent(code)}` 
+    : `${API_BASE}/alpha?codes=${encodeURIComponent(code)}&${fieldParams}`;
+  
+  const res = await fetch(url);
+  if (res.status === 404) return [];
+  if (!res.ok) throw new Error('Failed to search countries');
+  return res.json();
+};
+
+/**
+ * Search countries by capital only (for specific capital lookups)
+ */
+export const searchCountriesByCapital = async (capital: string, isDetail: boolean = false): Promise<Country[]> => {
+  const fieldParams = `fields=${HOMEPAGE_FIELDS}`;
+  const url = isDetail 
+    ? `${API_BASE}/capital/${encodeURIComponent(capital)}` 
+    : `${API_BASE}/capital/${encodeURIComponent(capital)}?${fieldParams}`;
+  
+  const res = await fetch(url);
+  if (res.status === 404) return [];
+  if (!res.ok) throw new Error('Failed to search countries');
+  return res.json();
 };
 
 /**

@@ -91,6 +91,7 @@ main {
 .country-cards-container {
   width: 100%;
   max-width: 80rem;
+  min-height: 80svh;
   display: grid;
   align-self: center;
   grid-template-columns: repeat(auto-fill, 16.5rem);

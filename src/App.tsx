@@ -55,10 +55,7 @@ function CountryProvider({ children } : {children: React.ReactNode}) {
   }, []);
 
   const handleCountryChange = useCallback((countries : Country[]) => {
-      setCountry(countries);
-      if (region){
-        setCountry(prev => prev.filter(country => country.region === region));
-      }
+      setCountry(region? countries.filter(country => country.region === region) : countries);
     }, [region]); 
 
   return (
@@ -150,6 +147,7 @@ function Card({ country } : {country: Country}){
 }
 
 function CardContainer(){
+  console.log('rendering card container')
 
   const { country, handleCountryChange } = useCountry();
 
