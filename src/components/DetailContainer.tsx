@@ -16,13 +16,14 @@ function BackButton({ navigate }: { navigate: (path: string) => void }) {
     )
 }
 
-const getBorderName = (code: string) => {
-    const {country} = useCountry();
-    const borderCountry = country?.find(c => c.cca3 === code);
-    return borderCountry ? borderCountry.name.common : code;
-  };
-
 function BorderContainer({detailedCountry} : {detailedCountry: Country}){
+    const {country} = useCountry();
+
+    const getBorderName = (code: string) => {
+        const borderCountry = country?.find(c => c.cca3 === code);
+        return borderCountry ? borderCountry.name.common : code;
+    };
+
     if (!detailedCountry['borders']){
         return null;
     }

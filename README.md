@@ -1,6 +1,6 @@
-# 🌍 Country Info - REST Countries API
+# 🌍 Country Info
 
-A modern, responsive web application for exploring information about countries around the world. Built with React, TypeScript, and the REST Countries API.
+A modern, responsive web application for exploring information about countries around the world. Built with React and TypeScript around a bundled country dataset.
 
 ![Preview](./preview.jpg)
 
@@ -19,7 +19,7 @@ A modern, responsive web application for exploring information about countries a
 
 ## 🚀 Live Demo
 
-**[View Live Site](https://ringlochid.github.io/CountryInfo-ReactTs-RestCountryAPI/)**
+**[View Live Site](https://ringlochid.me/RestCountryInfo/)**
 
 ## 🛠️ Tech Stack
 
@@ -30,7 +30,7 @@ A modern, responsive web application for exploring information about countries a
 | **Vite** | Build tool & dev server |
 | **React Router v7** | Client-side routing |
 | **CSS Variables** | Theming & responsive typography |
-| **REST Countries API** | Country data |
+| **Bundled country dataset** | Country data without runtime API dependencies |
 | **GitHub Actions** | CI/CD deployment |
 
 ## 📁 Project Structure
@@ -70,10 +70,10 @@ src/
 
 ```bash
 # Clone the repository
-git clone https://github.com/ringlochid/CountryInfo-ReactTs-RestCountryAPI.git
+git clone https://github.com/ringlochid/RestCountryInfo.git
 
 # Navigate to project directory
-cd CountryInfo-ReactTs-RestCountryAPI
+cd RestCountryInfo
 
 # Install dependencies
 npm install
@@ -92,22 +92,17 @@ npm run build
 
 The production build will be in the `dist/` folder.
 
-## 🌐 API Reference
+## Country data
 
-This app uses the [REST Countries API v3.1](https://restcountries.com/).
-
-| Endpoint | Description |
-|----------|-------------|
-| `GET /all` | Get all countries |
-| `GET /name/{name}` | Search by country name |
-| `GET /capital/{capital}` | Search by capital city |
-| `GET /alpha/{code}` | Get country by code |
-| `GET /region/{region}` | Filter by region |
+The app reads a bundled snapshot of 250 countries. Searches, region filters,
+detail pages, and border-country links all run locally, so the public site does
+not expose an API key or depend on a deprecated endpoint.
 
 ## 🎨 Features Explained
 
-### Parallel Search
-The search feature uses `Promise.any()` to simultaneously search by name, capital, and country code—returning the first successful result for a faster user experience.
+### Local Search
+The search feature matches country names, capitals, and country codes directly
+against the bundled dataset.
 
 ### Responsive Typography
 Uses CSS `clamp()` for fluid font scaling:
@@ -125,4 +120,4 @@ This project is open source and available under the [MIT License](LICENSE).
 ## 🙏 Acknowledgments
 
 - Design inspiration from [Frontend Mentor](https://www.frontendmentor.io/)
-- Country data from [REST Countries API](https://restcountries.com/)
+- Country data snapshot supplied with the project

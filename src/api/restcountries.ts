@@ -1,6 +1,3 @@
-const API_BASE = 'https://restcountries.com/v3.1';
-
-// Type definitions based on API response structure
 export interface CountryName {
   common: string;
   official: string;
@@ -29,135 +26,200 @@ export interface Country {
   currencies?: Record<string, Currency>;
   languages?: Record<string, string>;
   borders?: string[];
+  cca2?: string;
   cca3: string;
 }
 
-// Homepage fields for optimized payload
-const HOMEPAGE_FIELDS = 'name,flags,population,region,capital,cca3';
+interface LegacyCurrency extends Currency {
+  code?: string;
+}
 
-/**
- * Get all countries (with field filtering for homepage performance)
- */
-export const getAllCountries = async (): Promise<Country[]> => {
-  const res = await fetch(`${API_BASE}/all?fields=${HOMEPAGE_FIELDS}`);
-  if (!res.ok) throw new Error('Failed to fetch countries');
-  const data = await res.json();
-  return data;
+interface LegacyLanguage {
+  iso639_1?: string;
+  iso639_2?: string;
+  name: string;
+}
+
+interface LegacyCountry {
+  name: string;
+  nativeName?: string;
+  topLevelDomain?: string[];
+  alpha2Code?: string;
+  alpha3Code: string;
+  capital?: string;
+  subregion?: string;
+  region: string;
+  population: number;
+  borders?: string[];
+  flags: {
+    svg: string;
+    png: string;
+  };
+  currencies?: LegacyCurrency[];
+  languages?: LegacyLanguage[];
+}
+
+const DATA_URL = `${import.meta.env.BASE_URL}data.json`;
+let countriesPromise: Promise<Country[]> | undefined;
+
+const toCurrencyRecord = (currencies?: LegacyCurrency[]) => {
+  if (!currencies?.length) return undefined;
+
+  return Object.fromEntries(
+    currencies.map((currency, index) => [
+      currency.code ?? `currency-${index}`,
+      { name: currency.name, symbol: currency.symbol },
+    ]),
+  );
 };
 
-/**
- * Helper to create a fetch promise that rejects on non-ok responses
- */
-const fetchOrReject = async (url: string): Promise<Country[]> => {
-  const res = await fetch(url);
-  if (!res.ok) throw new Error('Not found');
-  return res.json();
+const toLanguageRecord = (languages?: LegacyLanguage[]) => {
+  if (!languages?.length) return undefined;
+
+  return Object.fromEntries(
+    languages.map((language, index) => [
+      language.iso639_2 ?? language.iso639_1 ?? `language-${index}`,
+      language.name,
+    ]),
+  );
 };
 
-/**
- * Search countries by name, capital, or code (parallel search)
- * Uses Promise.any() to run all searches simultaneously and return the first success
- */
-export const searchCountries = async (name: string, isDetail: boolean = false): Promise<Country[]> => {
-  if (!name) {
-    return getAllCountries();
+const toCountry = (country: LegacyCountry): Country => ({
+  name: {
+    common: country.name,
+    official: country.name,
+    nativeName: country.nativeName
+      ? {
+          default: {
+            common: country.nativeName,
+            official: country.nativeName,
+          },
+        }
+      : undefined,
+  },
+  flags: {
+    ...country.flags,
+    alt: `Flag of ${country.name}`,
+  },
+  population: country.population,
+  region: country.region,
+  subregion: country.subregion,
+  capital: country.capital ? [country.capital] : undefined,
+  tld: country.topLevelDomain,
+  currencies: toCurrencyRecord(country.currencies),
+  languages: toLanguageRecord(country.languages),
+  borders: country.borders,
+  cca2: country.alpha2Code,
+  cca3: country.alpha3Code,
+});
+
+const loadCountries = (): Promise<Country[]> => {
+  if (!countriesPromise) {
+    countriesPromise = fetch(DATA_URL)
+      .then(async (response) => {
+        if (!response.ok) {
+          throw new Error(`Failed to load country data (${response.status})`);
+        }
+
+        const data: unknown = await response.json();
+        if (!Array.isArray(data)) {
+          throw new Error('Country data has an invalid format');
+        }
+
+        return (data as LegacyCountry[]).map(toCountry);
+      })
+      .catch((error: unknown) => {
+        countriesPromise = undefined;
+        throw error;
+      });
   }
 
-  const fieldParams = `fields=${HOMEPAGE_FIELDS}`;
-
-  const nameUrl = isDetail 
-    ? `${API_BASE}/name/${encodeURIComponent(name)}` 
-    : `${API_BASE}/name/${encodeURIComponent(name)}?${fieldParams}`;
-  
-  const capitalUrl = isDetail 
-    ? `${API_BASE}/capital/${encodeURIComponent(name)}` 
-    : `${API_BASE}/capital/${encodeURIComponent(name)}?${fieldParams}`;
-  
-  const codeUrl = isDetail 
-    ? `${API_BASE}/alpha?codes=${encodeURIComponent(name)}` 
-    : `${API_BASE}/alpha?codes=${encodeURIComponent(name)}&${fieldParams}`;
-
-  const searchPromises: Promise<Country[]>[] = [
-    fetchOrReject(nameUrl),
-    fetchOrReject(capitalUrl),
-  ];
-
-  if (name.length <= 3) {
-    searchPromises.push(fetchOrReject(codeUrl));
-  }
-
-  try {
-    const result = await Promise.any(searchPromises);
-    return result;
-  } catch {
-    throw new Error('Country not found');
-  }
+  return countriesPromise;
 };
 
-/**
- * Search countries by code only (for specific code lookups)
- */
-export const searchCountriesByCode = async (code: string, isDetail: boolean = false): Promise<Country[]> => {
-  const fieldParams = `fields=${HOMEPAGE_FIELDS}`;
-  const url = isDetail 
-    ? `${API_BASE}/alpha?codes=${encodeURIComponent(code)}` 
-    : `${API_BASE}/alpha?codes=${encodeURIComponent(code)}&${fieldParams}`;
-  
-  const res = await fetch(url);
-  if (res.status === 404) return [];
-  if (!res.ok) throw new Error('Failed to search countries');
-  return res.json();
-};
+const normalize = (value: string) => value.trim().toLocaleLowerCase();
 
-/**
- * Search countries by capital only (for specific capital lookups)
- */
-export const searchCountriesByCapital = async (capital: string, isDetail: boolean = false): Promise<Country[]> => {
-  const fieldParams = `fields=${HOMEPAGE_FIELDS}`;
-  const url = isDetail 
-    ? `${API_BASE}/capital/${encodeURIComponent(capital)}` 
-    : `${API_BASE}/capital/${encodeURIComponent(capital)}?${fieldParams}`;
-  
-  const res = await fetch(url);
-  if (res.status === 404) return [];
-  if (!res.ok) throw new Error('Failed to search countries');
-  return res.json();
-};
+export const getAllCountries = async (): Promise<Country[]> => loadCountries();
 
-/**
- * Filter countries by region
- * Regions: africa, americas, asia, europe, oceania
- */
-export const getCountriesByRegion = async (region: string | null): Promise<Country[]> => {
-  if (!region) {
-    return getAllCountries();
-  }
-  const params = new URLSearchParams({
-    fields: HOMEPAGE_FIELDS 
+export const searchCountries = async (
+  query: string,
+  isDetail: boolean = false,
+): Promise<Country[]> => {
+  void isDetail;
+
+  const normalizedQuery = normalize(query);
+  if (!normalizedQuery) return getAllCountries();
+
+  const countries = await loadCountries();
+  const matches = countries.filter((country) => {
+    const matchesName =
+      normalize(country.name.common).includes(normalizedQuery) ||
+      normalize(country.name.official).includes(normalizedQuery);
+    const matchesCapital = country.capital?.some((capital) =>
+      normalize(capital).includes(normalizedQuery),
+    );
+    const matchesCode =
+      country.cca3.toLocaleLowerCase() === normalizedQuery ||
+      country.cca2?.toLocaleLowerCase() === normalizedQuery;
+
+    return matchesName || matchesCapital || matchesCode;
   });
-  const res = await fetch(`${API_BASE}/region/${region}?${params}`);
-  if (!res.ok) throw new Error('Failed to fetch countries by region');
-  const data = await res.json();
-  return data;
+
+  if (!matches.length) throw new Error('Country not found');
+  return matches;
 };
 
-/**
- * Get single country by alpha code (cca2, cca3, or ccn3)
- */
+export const searchCountriesByCode = async (
+  code: string,
+  isDetail: boolean = false,
+): Promise<Country[]> => {
+  void isDetail;
+
+  const normalizedCode = normalize(code);
+  const countries = await loadCountries();
+  return countries.filter(
+    (country) =>
+      country.cca3.toLocaleLowerCase() === normalizedCode ||
+      country.cca2?.toLocaleLowerCase() === normalizedCode,
+  );
+};
+
+export const searchCountriesByCapital = async (
+  capital: string,
+  isDetail: boolean = false,
+): Promise<Country[]> => {
+  void isDetail;
+
+  const normalizedCapital = normalize(capital);
+  const countries = await loadCountries();
+  return countries.filter((country) =>
+    country.capital?.some((value) => normalize(value).includes(normalizedCapital)),
+  );
+};
+
+export const getCountriesByRegion = async (
+  region: string | null,
+): Promise<Country[]> => {
+  if (!region) return getAllCountries();
+
+  const normalizedRegion = normalize(region);
+  const countries = await loadCountries();
+  return countries.filter((country) => normalize(country.region) === normalizedRegion);
+};
+
 export const getCountryByCode = async (code: string): Promise<Country> => {
-  const res = await fetch(`${API_BASE}/alpha/${code}`);
-  if (!res.ok) throw new Error('Country not found');
-  const data = await res.json();
-  return data;
+  const matches = await searchCountriesByCode(code, true);
+  const country = matches[0];
+  if (!country) throw new Error('Country not found');
+  return country;
 };
 
-/**
- * Get multiple countries by codes (for border countries)
- */
 export const getCountriesByCodes = async (codes: string[]): Promise<Country[]> => {
-  if (codes.length === 0) return [];
-  const res = await fetch(`${API_BASE}/alpha?codes=${codes.join(',')}`);
-  if (!res.ok) throw new Error('Failed to fetch countries by codes');
-  const data = await res.json();
-  return data;
+  if (!codes.length) return [];
+
+  const normalizedCodes = new Set(codes.map((code) => normalize(code)));
+  const countries = await loadCountries();
+  return countries.filter((country) =>
+    normalizedCodes.has(country.cca3.toLocaleLowerCase()),
+  );
 };
